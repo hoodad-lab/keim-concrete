@@ -13,7 +13,7 @@
 }
 *{box-sizing:border-box}
 body{background:var(--ground);color:var(--ink);font:400 16px/1.55 var(--body);padding-inline:16px;padding-block:0 56px}
-.wrap{max-width:1080px;margin:0 auto}
+.wrap{max-width:1200px;margin:0 auto;--r:1.4}
 header{padding-block:40px 20px;display:grid;gap:14px}
 .eyebrow{font:500 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--red-ink);display:flex;gap:10px;align-items:center}
 .eyebrow::before{content:"";width:22px;height:3px;background:var(--red)}
@@ -26,12 +26,12 @@ h1 span{color:var(--red)}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
 .chip:focus-visible,.nav button:focus-visible,.knob:focus-visible{outline:3px solid var(--red);outline-offset:2px}
 
-.track{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain;padding-bottom:4px}
+.track{display:flex;gap:14px;align-items:flex-start;overflow-x:auto;overflow-y:hidden;transition:height .25s ease;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain;padding-bottom:4px}
 .track::-webkit-scrollbar{display:none}
 .slide{flex:0 0 100%;scroll-snap-align:center;display:grid;gap:14px}
-@media (max-width:700px){.slide{flex-basis:90%}}
+@media (max-width:700px){.slide{flex-basis:100%}}
 
-.compare{position:relative;width:100%;margin-inline:auto;max-width:100%;overflow:hidden;background:var(--surface);user-select:none;-webkit-user-select:none;cursor:ew-resize;touch-action:pan-x pan-y}
+.compare{position:relative;width:100%;margin-inline:auto;max-width:min(100%,calc(88vh * var(--r)));overflow:hidden;background:var(--surface);user-select:none;-webkit-user-select:none;cursor:ew-resize;touch-action:pan-x pan-y}
 .compare img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
 .compare .before{clip-path:inset(0 calc(100% - var(--pos)) 0 0)}
 .divider{position:absolute;top:0;bottom:0;left:var(--pos);width:2px;margin-left:-1px;background:var(--knob);box-shadow:0 0 0 1px rgba(0,0,0,.15)}
@@ -40,13 +40,13 @@ h1 span{color:var(--red)}
 .tag{position:absolute;top:12px;font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;padding:7px 9px;background:var(--shade);color:#fff;transition:opacity .2s}
 .tag.b{left:12px}.tag.a{right:12px;background:var(--red)}
 
-.cap{width:100%;max-width:880px;margin-inline:auto;display:grid;grid-template-columns:auto 1fr;gap:4px 16px;align-items:baseline}
+.cap{width:100%;max-width:min(100%,calc(88vh * var(--r)));margin-inline:auto;margin-top:18px;padding-top:18px;border-top:1px solid var(--line);display:grid;grid-template-columns:auto 1fr;gap:4px 16px;align-items:baseline}
 .num{font:800 44px/1 var(--display);font-stretch:62%;color:var(--red);grid-row:span 3;font-variant-numeric:tabular-nums}
 .topic{font:500 11px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .cap h2{font:800 clamp(22px,3.2vw,30px)/1.05 var(--display);font-stretch:85%;margin:0;text-wrap:balance}
 .cap p{margin:0;color:var(--muted);max-width:62ch}
 
-.nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:20px;border-top:1px solid var(--line);padding-top:16px}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px auto 0;max-width:min(100%,calc(88vh * var(--r)))}
 .nav button{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--ground);color:var(--ink);cursor:pointer;display:grid;place-items:center}
 .nav button:disabled{opacity:.3;cursor:default}
 .nav svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -54,7 +54,7 @@ h1 span{color:var(--red)}
 .nav .dot{flex:0 1 26px;min-width:8px;width:26px;height:4px;border:0;border-radius:0;padding:0;background:var(--line);cursor:pointer}
 .nav .dot[aria-current="true"]{background:var(--red)}
 .count{font:500 13px/1 var(--mono);color:var(--muted);font-variant-numeric:tabular-nums;min-width:52px;text-align:center}
-.hint{font-size:13px;color:var(--muted);margin-top:12px;line-height:1.5}
+.hint{font-size:13px;color:var(--muted);margin:16px auto 0;line-height:1.5;max-width:min(100%,calc(88vh * var(--r)))}
 .hint b{color:var(--ink);font-weight:600}
 .zoom-btn{position:absolute;right:12px;bottom:12px;width:44px;height:44px;border-radius:50%;border:0;background:var(--shade);color:#fff;display:grid;place-items:center;cursor:zoom-in;padding:0}
 .zoom-btn svg,.lb-bar svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
@@ -256,7 +256,7 @@ h1 span{color:inherit}
 .gate input:focus-visible,.gate select:focus-visible{outline:2px solid var(--red)}
 .gate .dlbtn{justify-content:center}
 </style>
-<style>body{margin:0} html.embed header{display:none}</style>
+<style>body{margin:0} html.embed header{display:none} html.embed{scrollbar-width:none;-ms-overflow-style:none} html.embed::-webkit-scrollbar,html.embed body::-webkit-scrollbar{width:0;height:0;display:none} html.embed body{padding-block:0 20px}</style>
 </head><body>
 <script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add('embed')</script>
 
@@ -287,6 +287,7 @@ h1 span{color:inherit}
     <span class="count" id="count">1 / 8</span>
     <button id="next" aria-label="Next project"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
   </div>
+  <div class="cap" id="cap"></div>
   <div class="hint"><b>Swipe</b> for the next project · <b>drag</b> or <b>tap</b> a photo to compare · <b>double-click</b> or use the magnifier to zoom</div>
 
 </div>
@@ -334,9 +335,9 @@ const arrows = '<svg viewBox="0 0 24 24"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6"/><
 
 PAIRS.forEach((d,i)=>{
   const s = document.createElement('article');
-  s.className='slide'; s.dataset.t=d.t; s.setAttribute('aria-roledescription','slide');
+  s.className='slide'; s.dataset.t=d.t; s.dataset.i=i; s.style.setProperty('--r',d.r); s.setAttribute('aria-roledescription','slide');
   s.innerHTML = `
-    <div class="compare" style="aspect-ratio:${d.r};--pos:50%;max-width:min(100%,calc(72vh * ${d.r}))">
+    <div class="compare" style="aspect-ratio:${d.r};--pos:50%">
       <img loading="lazy" class="after" src="${IMG[d.a]}" alt="After: ${d.h}" draggable="false">
       <img loading="lazy" class="before" src="${IMG[d.b]}" alt="Before: ${d.h}" draggable="false">
       <div class="divider"></div>
@@ -345,12 +346,7 @@ PAIRS.forEach((d,i)=>{
       <button class="zoom-btn" id="zoom-${i}" aria-label="Zoom in on ${d.h}"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5M10.5 8v5M8 10.5h5"/></svg></button>
       <button class="knob" id="knob-${i}" role="slider" aria-label="Compare before and after" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">${arrows}</button>
     </div>
-    <div class="cap">
-      <div class="num">${String(i+1).padStart(2,'0')}</div>
-      <div class="topic">${d.tl}</div>
-      <h2>${d.h}</h2>
-      <p>${d.p}</p>
-    </div>`;
+`;
   track.appendChild(s);
   const box = s.querySelector('.compare');
   setupCompare(box);
@@ -399,7 +395,24 @@ function update(){
   document.getElementById('count').textContent = `${idx+1} / ${v.length}`;
   document.getElementById('prev').disabled = idx===0;
   document.getElementById('next').disabled = idx===v.length-1;
+  const cur = v[idx];
+  if(cur){
+    fitTrack(cur);
+    const d = PAIRS[+cur.dataset.i];
+    document.querySelector('.wrap').style.setProperty('--r', d.r);
+    document.getElementById('cap').innerHTML =
+      `<div class="num">${String(idx+1).padStart(2,'0')}</div>`+
+      `<div class="topic">${d.tl}</div><h2>${d.h}</h2><p>${d.p}</p>`;
+  }
 }
+function fitTrack(cur){
+  cur = cur || visible()[idx];
+  if(!cur) return;
+  const h = cur.getBoundingClientRect().height;
+  if(h) track.style.height = h + 'px';
+}
+addEventListener('resize', ()=>fitTrack());
+addEventListener('load', ()=>fitTrack());
 function go(i){
   const v = visible(); idx = Math.max(0,Math.min(v.length-1,i)); lock=Date.now()+700;
   track.scrollTo({left: v[idx].offsetLeft - track.offsetLeft - (track.clientWidth - v[idx].clientWidth)/2});
