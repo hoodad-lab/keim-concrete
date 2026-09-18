@@ -368,7 +368,6 @@ h1 span{color:inherit}
         <div class="cta">
           <a class="dlbtn" id="t-sample" href="https://www.keim.com.au/samples" target="_blank" rel="noopener">Order a sample pot of <span id="t-sample-no">9550</span></a>
           <button class="dlbtn ghost" id="t-quote-open">Get advice &amp; a quote</button>
-          <a class="dlbtn ghost" id="t-full" href="#" target="_blank" rel="noopener" hidden>Open full screen</a>
         </div>
         <form class="lead" id="t-lead" hidden novalidate>
           <b>Send us your preview</b>
@@ -799,7 +798,7 @@ $('t-dl-both').onclick=()=>doDownload(true);
 $('t-dl-after').onclick=()=>doDownload(false);
 
 /* ---- CTA, lead form, damage check ---- */
-if(window.self!==window.top){ const f=$('t-full'); f.hidden=false; f.href=location.href.split('#')[0].replace(/[?&]embed=1/,''); }
+
 function refreshCta(){ const no=cur[0]; $('t-sample-no').textContent=no;
   $('t-sample').href=KEIM_CFG.liveColours.has(no)?`https://www.keim.com.au/colours/exclusiv-${no}`:'https://www.keim.com.au/samples'; }
 $('t-sample').addEventListener('click',()=>track('sample_click',{colour:cur[0]}));
