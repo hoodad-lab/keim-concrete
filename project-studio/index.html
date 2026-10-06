@@ -733,7 +733,7 @@ input.i[type=date]::-webkit-calendar-picker-indicator{opacity:.6}
 .povr td{padding-top:0!important;border-top:0!important}.pover{display:flex;gap:8px;flex-wrap:wrap}.pover select{flex:1;min-width:170px}.pover input{width:120px}
 .puse{margin-bottom:6px}.puse .fchip .mono{background:var(--red);color:#fff;border-radius:99px;padding:1px 7px;font-size:11px;margin-left:4px}
 .pneed{font-size:14px;color:var(--ink-2);margin:4px 0 8px;display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap}.pneed .btn{margin-left:auto}@media (max-width:560px){.pneed .btn{margin-left:0;width:100%;justify-content:center}}
-.qr-ovl .lc{max-width:520px}.qr-list{list-style:none;margin:0 0 4px;padding:0;border:1px solid var(--line);border-radius:10px;max-height:220px;overflow:auto}.qr-list li{display:flex;gap:10px;align-items:center;padding:8px 10px;border-top:1px solid var(--line);font-size:13.5px}.qr-list li:first-child{border-top:0}.qr-list .pp{width:34px;height:34px;flex:none;display:grid;place-items:center;background:#fff;border-radius:6px;overflow:hidden}.qr-list .pp img,.qr-list .pp svg{max-width:100%;max-height:100%}.qr-list b{display:block}.qr-list small{color:var(--muted)}.qr-done{display:grid;gap:10px}.qr-done .btn{justify-content:center;text-decoration:none}
+.qr-ovl .lc{max-width:520px}.qr-list{list-style:none;margin:0 0 4px;padding:0;border:1px solid var(--line);border-radius:10px;max-height:220px;overflow:auto}.qr-list li{display:flex;gap:10px;align-items:center;padding:8px 10px;border-top:1px solid var(--line);font-size:13.5px}.qr-list li:first-child{border-top:0}.qr-list .pp{width:34px;height:34px;flex:none;display:grid;place-items:center;background:#fff;border-radius:6px;overflow:hidden}.qr-list .pp img,.qr-list .pp svg{max-width:100%;max-height:100%}.qr-list b{display:block}.qr-list small{color:var(--muted)}.qr-done{display:grid;gap:10px}.qr-ok{color:#2f8a4a;margin-bottom:-4px}.qr-done .btn{justify-content:center;text-decoration:none}
 .doc.qr .qtbl td{vertical-align:middle}.doc.qr .qimg{width:44px;height:44px;display:grid;place-items:center}.doc.qr .qimg img{max-width:44px;max-height:44px}.doc.qr .big{font-size:15px;font-weight:700}.doc.qr .tick{display:inline-block;width:14px;height:14px;border:1.5px solid #bbb;border-radius:3px}
 .pqty{display:flex;flex-direction:column;gap:1px;background:var(--red-soft);border-radius:8px;padding:6px 9px;margin-top:6px;color:#232427}.pqty b{font-size:14px}.pqty span{font-size:12px!important;color:#55504a!important;-webkit-line-clamp:unset!important}
 .dilf{grid-column:1/-1}.dilf small{font-weight:400;color:var(--muted);margin-left:4px}.dilf .dilw{display:block;margin:4px 0 0;color:var(--ochre)}
@@ -1420,7 +1420,7 @@ function renderCosts(){
       ${M.prods.map(x=>`<tr><td><b>${esc(x.pr.name)}</b><br><small class="mono" style="color:var(--muted)">${fmt(x.qty,1)} ${esc(x.pr.unit)} needed · ${fmt(x.supplied,1)} supplied</small></td><td>${esc(planText(x.plan,x.pr.unit))}</td><td class="mono" style="text-align:right">${x.avg!=null?aud(x.avg,2)+"/"+esc(x.pr.unit):"—"}${x.custom&&x.list!=null?`<br><s style="color:var(--muted);font-size:11.5px">${aud(x.list,2)}</s>`:""}</td><td class="mono" style="text-align:right">${x.cost!=null?aud(x.cost):"On request"}</td></tr>
       ${canEditPrices()?`<tr class="povr"><td colspan="4"><span class="pover"><select class="i" data-pover-m="${x.pid}"><option value="" ${!x.ov.mode?"selected":""}>${x.list!=null?"List price"+(c.discount?` −${c.discount}%`:""):"No list price"}</option><option value="price" ${x.ov.mode==="price"?"selected":""}>Custom $/${esc(x.pr.unit)}</option><option value="disc" ${x.ov.mode==="disc"?"selected":""}>% off list</option></select>${x.ov.mode?`<input class="i mono" type="number" inputmode="decimal" step="any" min="0" data-pover-v="${x.pid}" value="${esc(x.ov.v??"")}" placeholder="${x.ov.mode==="price"?(x.list!=null?fmt(x.list,2):"0.00"):"e.g. 10"}">`:""}</span></td></tr>`:""}`).join("")}
       <tr><td colspan="3"><b>Materials total</b>${c.discount?` <small>(after ${c.discount}% discount)</small>`:""}</td><td class="mono" style="text-align:right"><b>${aud(M.matPacks)}</b></td></tr></tbody></table></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button class="btn" data-act="quotereq" data-v="project">Request an official quote from KEIM</button><small style="color:var(--muted)">Sends these quantities to info@keim.com.au as a PDF</small></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button class="btn" data-act="quotereq" data-v="project">Request an official quote from KEIM</button><small style="color:var(--muted)">Sends these quantities to KEIM Australia as a PDF</small></div>
      </section>
     </div>
     <div class="col">
@@ -1522,6 +1522,16 @@ async function downloadEstimate(){
 
 /* ---------- quote request to KEIM ---------- */
 const KEIM_ORDERS="info@keim.com.au";
+/* Quote requests are sent automatically through this Jotform form, which emails info@keim.com.au with the PDF attached */
+const QUOTE_FORM={id:"262781210392050",f:{first:"q2_q2_fullname0[first]",last:"q2_q2_fullname0[last]",email:"q3_q3_email1",phone:"q4_q4_textbox2",company:"q5_q5_textbox3",state:"q6_q6_textbox4",role:"q7_q7_textbox5",project:"q8_q8_textbox6",address:"q9_q9_textbox7",ref:"q10_q10_textbox8",deliver:"q11_q11_textbox9",needBy:"q12_q12_textbox10",notes:"q13_q13_textarea11",products:"q14_q14_textarea12",pdf:"q15_q15_fileupload13[]"}};
+async function sendQuote(p,lines,o,blob,name){ const c=S.contact||{}; const F=QUOTE_FORM.f; const fd=new FormData(); const nm=(c.name||"").trim().split(/\s+/);
+  const add=(k,v)=>fd.append(k,v==null?"":String(v));
+  add("formID",QUOTE_FORM.id); add("simple_spc",QUOTE_FORM.id+"-"+QUOTE_FORM.id); add("submitSource","form"); add("jsExecutionTracker","build-date-"+Date.now()); add("buildDate",Date.now());
+  add(F.first,nm[0]||""); add(F.last,nm.slice(1).join(" ")||"-"); add(F.email,c.email); add(F.phone,c.phone); add(F.company,c.company||p.preparedFor); add(F.state,c.state); add(F.role,c.role);
+  add(F.project,(p.name||"").replace(/^Example:\s*/,"")); add(F.address,p.address); add(F.ref,p.ref+"-Q"); add(F.deliver,o.deliver); add(F.needBy,o.needBy?fmtDate(o.needBy):""); add(F.notes,o.notes);
+  add(F.products,lines.map(t=>`${t.p.name}: ${planText(t.plan,t.p.unit)} (${fmt(t.supplied,1)} ${t.p.unit}; ${fmt(t.qty,1)} ${t.p.unit} needed)`).join("\n"));
+  fd.append(F.pdf,new File([blob],name,{type:"application/pdf"}));
+  await fetch("https://submit.jotform.com/submit/"+QUOTE_FORM.id,{method:"POST",body:fd,mode:"no-cors"}); return true; }
 const imgDataCache={};
 async function imgData(url){ if(!url||/^data:/.test(url)) return url; if(imgDataCache[url]!==undefined) return imgDataCache[url];
   try{ const r=await fetch(url); if(!r.ok) throw 0; const b=await r.blob(); imgDataCache[url]=await new Promise(res=>{ const fr=new FileReader(); fr.onload=()=>res(fr.result); fr.onerror=()=>res(""); fr.readAsDataURL(b); }); }catch(_){ imgDataCache[url]=""; }
@@ -1569,11 +1579,11 @@ async function quoteRequest(src){
   const {p,lines}=quoteSource(src); if(!lines.length){ toast("Choose a KEIM system and area first."); return; }
   const qd=S.quoteDraft||(S.quoteDraft={});
   const d=document.createElement("div"); d.className="lc-ovl qr-ovl";
-  d.innerHTML=`<form class="lc" novalidate><h2>Request a quote from KEIM</h2><p>We make a PDF of these products and quantities for KEIM Australia. Email it to ${KEIM_ORDERS} and you will receive an official quote with prices, freight and lead time.</p>
+  d.innerHTML=`<form class="lc" novalidate><h2>Request a quote from KEIM</h2><p>We send these products and quantities to KEIM Australia (${KEIM_ORDERS}) as a PDF. You will receive an official quote with prices, freight and lead time, and a copy for your records.</p>
    <ul class="qr-list">${lines.map(t=>`<li><span class="pp">${prodPhoto(t.p,34)}</span><span><b>${esc(t.p.name)}</b><small>${esc(planText(t.plan,t.p.unit))}</small></span></li>`).join("")}</ul>
    <label class="f">Deliver to<input class="i" name="deliver" value="${esc(qd.deliver??p.address??"")}" placeholder="Site address or pick up from Matraville"></label>
    <div class="g2"><label class="f">Needed by<input class="i" name="needBy" type="date" value="${esc(qd.needBy||"")}"></label><label class="f">Notes<input class="i" name="notes" value="${esc(qd.notes||"")}" placeholder="Optional, e.g. tint colours, delivery times"></label></div>
-   <div class="err"></div><div class="acts"><button type="button" class="btn ghost" data-x>Cancel</button><button class="btn primary">Download quote request</button></div></form>`;
+   <div class="err"></div><div class="acts"><button type="button" class="btn ghost" data-x>Cancel</button><button class="btn primary">Send quote request</button></div></form>`;
   document.body.appendChild(d);
   const close=()=>d.remove(); d.querySelector("[data-x]").onclick=close; d.addEventListener("click",e=>{ if(e.target===d) close(); });
   const fm=d.querySelector("form");
@@ -1585,11 +1595,15 @@ async function quoteRequest(src){
     const blob=await renderToPdf(quoteHTML(p,lines,o,ph)); btn.disabled=false; if(!blob) return;
     logSpec(p,"quote");
     const name=`${(p.name||"KEIM-project").replace(/^Example:\s*/,"").replace(/[^\w\- ]+/g,"").trim().replace(/\s+/g,"-")}_${p.ref}_Quote-request.pdf`;
+    fm.innerHTML=`<h2>Sending to KEIM Australia…</h2><p>One moment.</p>`;
+    let sent=false; try{ sent=await sendQuote(p,lines,o,blob,name); }catch(_){ sent=false; }
     let saved=false;
     if(S.downloads){ try{ await S.downloads.save({filename:name,data:blob}); saved=true; }catch(err){ if(!(err&&err.code==="declined")) toast("The download was not saved."); } }
+    if(sent){ fm.innerHTML=`<div class="qr-ok"><svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m7.5 12.5 3 3 6-6.5"/></svg></div><h2>Quote request sent</h2><p>KEIM Australia has your request with the PDF attached and will reply to <b>${esc((S.contact||{}).email||"you")}</b> with an official quote. We have also emailed you a confirmation.${saved?` A copy is saved as <b>${esc(name)}</b>.`:""}</p><div class="acts"><button type="button" class="btn primary" data-x>Done</button></div>`;
+      fm.querySelector("[data-x]").onclick=close; return; }
     const subj=`Quote request: ${p.name||"KEIM project"} (${p.ref}-Q)`; const body=quoteText(p,lines,o);
     const mail=`mailto:${KEIM_ORDERS}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
-    fm.innerHTML=`<h2>${saved?"Quote request downloaded":"Almost done"}</h2><p>${saved?`<b>${esc(name)}</b> is saved. `:""}Now email it to KEIM Australia. The email below is ready to go: attach the PDF and send.</p>
+    fm.innerHTML=`<h2>${saved?"Quote request downloaded":"Almost done"}</h2><p>${saved?`<b>${esc(name)}</b> is saved. `:""}It could not be sent automatically from here, so please email it to KEIM Australia. The email below is ready to go: attach the PDF and send.</p>
      <div class="qr-done"><a class="btn primary" href="${esc(mail)}" target="_blank" rel="noopener">Open email to ${KEIM_ORDERS}</a><button type="button" class="btn" data-copy>Copy email text</button></div>
      <p style="font-size:12.5px;color:var(--muted);margin:0">Your local KEIM consultant is also notified, so they can follow up.</p>
      <div class="acts"><button type="button" class="btn ghost" data-x>Done</button></div>`;
