@@ -1,4 +1,4 @@
-/* KEIM Spec Builder - team edition adapter (GitHub Pages, no accounts)
+/* KEIM Project Studio - team edition adapter (GitHub Pages, no accounts)
    Gives the app the same window.claude.use("db" | "user" | "downloads") API it uses on claude.ai.
    - Products, systems and consultants come from team-data.js (built from the live prototype).
    - Prices are encrypted in team-data.js and only unlock with the team code (asked in Cost estimate).
