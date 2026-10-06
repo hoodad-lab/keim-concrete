@@ -1,7 +1,7 @@
 /* KEIM Spec Builder - team edition adapter (GitHub Pages, no accounts)
    Gives the app the same window.claude.use("db" | "user" | "downloads") API it uses on claude.ai.
    - Products, systems and consultants come from team-data.js (built from the live prototype).
-   - Prices are encrypted in team-data.js and only unlock with the team code.
+   - Prices are encrypted in team-data.js and only unlock with the team code (asked in Cost estimate).
    - Each person's projects and details stay in their own browser (localStorage). */
 (function () {
   const D = window.KEIM_TEAM_DATA || { collections: {} };
@@ -57,33 +57,19 @@
     const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(e.iv) }, key, b64(e.ct));
     return JSON.parse(new TextDecoder().decode(pt));
   }
-  function gate() {
-    return new Promise(res => {
-      const d = document.createElement("div"); d.className = "lc-ovl"; d.style.zIndex = 9999;
-      d.innerHTML = `<form class="lc" novalidate><h2>KEIM team access</h2><p>The Spec Builder is for the KEIM Australia team for now. Enter the team code you were sent. You only need to do this once on each device.</p>
-        <label class="f">Team code<input class="i" name="code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="KEIM-XXXX-XXXX" required></label>
-        <div class="err"></div><div class="acts"><button class="btn primary">Open the Spec Builder</button></div></form>`;
-      document.body.appendChild(d);
-      const f = d.querySelector("form"); f.code.focus();
-      f.onsubmit = async ev => {
-        ev.preventDefault(); const code = f.code.value;
-        try { const p = await decryptPricing(code); try { localStorage.setItem(CODE_KEY, code.trim().toUpperCase()); } catch (_) {} d.remove(); res(p); }
-        catch (_) { f.querySelector(".err").textContent = "That code is not right. Check the message you were sent, or ask Hoodad."; }
-      };
-    });
+  async function tryCode(code, remember) {
+    try { const p = await decryptPricing(code); mem["config/pricing"] = Object.assign({}, p, { showMembers: true }); fire("config/pricing");
+      if (remember) { try { localStorage.setItem(CODE_KEY, code.trim().toUpperCase()); } catch (_) {} } return true; }
+    catch (_) { return false; }
   }
   let ready = null;
   function unlock() {
     if (ready) return ready;
-    ready = (async () => {
-      let saved = null; try { saved = localStorage.getItem(CODE_KEY); } catch (_) {}
-      let pricing = null;
-      if (saved) { try { pricing = await decryptPricing(saved); } catch (_) { try { localStorage.removeItem(CODE_KEY); } catch (__) {} } }
-      if (!pricing) pricing = await gate();
-      if (pricing) mem["config/pricing"] = Object.assign({}, pricing, { showMembers: true });
-    })();
+    ready = (async () => { let saved = null; try { saved = localStorage.getItem(CODE_KEY); } catch (_) {}
+      if (saved && !(await tryCode(saved, false))) { try { localStorage.removeItem(CODE_KEY); } catch (_) {} } })();
     return ready;
   }
+  window.keimUnlockPrices = code => tryCode(code || "", true);
 
   /* ---------- user: one person per browser, named from their details ---------- */
   const UID = "team";

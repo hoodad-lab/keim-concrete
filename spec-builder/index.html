@@ -1386,7 +1386,10 @@ function costModel(p){
 }
 function renderCosts(){
   const p=S.project; const has=p.areas.some(a=>sysById(a.systemId));
-  if(!canSeePrices()){ $("#app").innerHTML=`<div class="hero"><div><div class="eyebrow">Project cost estimate</div><h1>Cost estimate</h1><p>Pricing is available to the KEIM Australia team. Ask your KEIM consultant for a project quote.</p></div></div>`; return; }
+  if(!canSeePrices()){ $("#app").innerHTML=`<div class="hero"><div><div class="eyebrow">Project cost estimate</div><h1>Cost estimate</h1><p>Pricing is available to the KEIM Australia team. ${window.keimUnlockPrices?"Enter the team code to see prices. You only need to do this once on each device.":"Ask your KEIM consultant for a project quote."}</p></div></div>
+    ${window.keimUnlockPrices?`<form class="panel unlockp" data-unlock="1" style="max-width:440px"><label class="f">Team code<input class="i" name="code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="KEIM-XXXX-XXXX"></label><div class="err" style="color:var(--red);font-size:13px"></div><button class="btn primary">Show prices</button></form>`:""}`;
+    const fm=document.querySelector("[data-unlock]"); if(fm) fm.onsubmit=async e=>{ e.preventDefault(); fm.code.blur(); const ok=await window.keimUnlockPrices(fm.code.value); if(ok){ setTimeout(render,50); return; } fm.querySelector(".err").textContent="That code is not right. Check the message you were sent."; };
+    return; }
   if(!S.pricing){ $("#app").innerHTML=`<p class="empty">Loading the price list…</p>`; return; }
   const M=costModel(p); const c=M.c; const max=Math.max(1,...M.rows.map(r=>r.mat+r.lab));
   $("#app").innerHTML=`<div class="hero"><div><div class="eyebrow">Project cost estimate</div><h1>${esc(p.name||"Untitled project")}</h1><p>Materials come from the specification quantities (incl. ${p.waste}% wastage, rounded up to full packs) and the KEIM price list. Labour uses your rates per coat. Change anything below and the numbers update.</p></div>
