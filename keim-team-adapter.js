@@ -69,7 +69,7 @@
       if (saved && !(await tryCode(saved, false))) { try { localStorage.removeItem(CODE_KEY); } catch (_) {} } })();
     return ready;
   }
-  window.keimUnlockPrices = code => tryCode(code || "", true);
+  if (D.pricingEnc) window.keimUnlockPrices = code => tryCode(code || "", true);
 
   /* ---------- user: one person per browser, named from their details ---------- */
   const UID = "team";
