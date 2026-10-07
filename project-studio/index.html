@@ -275,7 +275,7 @@ input.i:focus,select.i:focus,textarea.i:focus{border-color:var(--ink-2);outline:
 
 /* ===== v7 responsive UI ===== */
 .qstep{white-space:nowrap}
-html,body{overflow-x:hidden}
+html,body{overflow-x:clip}@supports not (overflow-x:clip){body{overflow-x:hidden}}
 .panel,.area,.opts,.opt>span,.sticky,.docscroll{min-width:0}
 .docscroll{overflow-x:auto}
 .wrap{max-width:1400px;margin:0 auto;padding-inline:16px;padding-block:20px 60px}
@@ -2396,9 +2396,11 @@ document.addEventListener("click", async e=>{
 window.addEventListener("hashchange",()=>{ const h=location.hash.slice(1); if(tabsList().some(([k])=>k===h)) go(h); });
 
 /* ---------- header hides while scrolling down on phones ---------- */
-(function(){ let last=window.scrollY||0; const bar=document.querySelector(".bar"); const mq=window.matchMedia("(max-width:899px)");
-  window.addEventListener("scroll",()=>{ const y=window.scrollY||0; if(!mq.matches){ bar.classList.remove("hide"); last=y; return; }
-    if(Math.abs(y-last)<8) return; bar.classList.toggle("hide", y>last && y>140); last=y; },{passive:true}); })();
+(function(){ const bar=document.querySelector(".bar"); const mq=window.matchMedia("(max-width:899px)"); let last=0;
+  const pos=t=>{ if(t&&t!==document&&t.nodeType===1&&t.scrollHeight>t.clientHeight+40&&!t.closest(".bar,.lc-ovl,.tabs,.kcdd,.tbl,.docscroll,.looks")) return t.scrollTop; return window.scrollY||document.documentElement.scrollTop||document.body.scrollTop||0; };
+  document.addEventListener("scroll",e=>{ const t=e.target; if(t&&t.nodeType===1&&t.closest&&t.closest(".tabs,.kcdd,.tbl,.docscroll,.looks,.qr-list,.lc")) return; const y=pos(t);
+    if(!mq.matches){ bar.classList.remove("hide"); last=y; return; }
+    if(Math.abs(y-last)<8) return; bar.classList.toggle("hide", y>last && y>140); last=y; },{passive:true,capture:true}); })();
 
 /* ---------- boot ---------- */
 S.project = exampleProject();
