@@ -658,10 +658,11 @@ input.i[type=date]{-webkit-appearance:none;appearance:none;display:block;width:1
 input.i[type=date]::-webkit-date-and-time-value{text-align:left;margin:0}
 input.i[type=date]::-webkit-calendar-picker-indicator{opacity:.6}
 .cfield{display:flex;gap:8px;align-items:center;position:relative}
-.kcdd{position:absolute;left:38px;right:0;top:calc(100% + 4px);z-index:40;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.18);max-height:300px;overflow:auto;padding:4px}
+.kcdd{position:absolute;left:auto;right:0;width:max(calc(100% - 38px),300px);max-width:calc(100vw - 24px);top:calc(100% + 4px);z-index:40;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.18);max-height:300px;overflow:auto;padding:4px}
 .kcdd button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;padding:9px 10px;border-radius:8px;cursor:pointer;font:inherit;color:var(--ink);text-align:left;font-size:14.5px}
 .kcdd button.on,.kcdd button:hover{background:var(--surface-2)}
-.kcdd em{margin-left:auto;font-style:normal;font-size:11px;font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:1px 7px;white-space:nowrap}.kcdd em.na{color:var(--red);border-color:currentColor}.cinfo{display:block;font-weight:400;font-size:12px;color:var(--muted);margin-top:4px}.cinfo.na{color:var(--red)}
+.glzp{display:grid;gap:6px;margin-top:2px}.glzp img{width:100%;display:block;border-radius:10px;border:1px solid var(--line)}.glzp .glzc{display:flex;align-items:center;gap:8px;justify-content:space-between;flex-wrap:wrap;font-size:13px}.glzp small{color:var(--muted);font-size:12px}
+.kcdd em{margin-left:auto;font-style:normal;font-size:11px;font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:1px 7px;white-space:nowrap}.kcdd button span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.kcdd em{flex:none}.kcdd em.na{color:var(--red);border-color:currentColor}.cinfo{display:block;font-weight:400;font-size:12px;color:var(--muted);margin-top:4px}.cinfo.na{color:var(--red)}
 .kcdd i{width:26px;height:26px;border-radius:6px;flex:none;border:1px solid rgba(0,0,0,.1)}
 .sdd{left:0}.sdd i{width:40px;height:30px}.sdd span{display:flex;flex-direction:column}.sdd small{font-size:11.5px;color:var(--muted)}
 .cfield .i{flex:1;min-width:0}
@@ -1002,7 +1003,7 @@ function areaCard(a,i){
         <button data-act="env" data-v="interior" aria-pressed="${a.env==="interior"}">${ICON_INT}Interior</button></div>
       <div class="grid2 keep">
         <label class="f">Area (m²)<input class="i mono" type="number" min="0" step="1" id="am-${a.id}" data-a="m2" value="${esc(a.m2)}"></label>
-        <label class="f" style="grid-column:1/-1">Colour${colourField("ac-"+a.id,'data-a="colour"',a.colour,"a:"+a.id)}${lzBtn("a:"+a.id,sysById(a.systemId))}${colourInfo(a,sysById(a.systemId))}</label>${dilField("a:"+a.id,a,sysById(a.systemId))}${pgField("a:"+a.id,a,sysById(a.systemId))}
+        <label class="f" style="grid-column:1/-1">Colour${colourField("ac-"+a.id,'data-a="colour"',a.colour,"a:"+a.id)}${lzBtn("a:"+a.id,sysById(a.systemId))}${colourInfo(a,sysById(a.systemId))}</label>${dilField("a:"+a.id,a,sysById(a.systemId))}${glazePreview("a:"+a.id,a,sysById(a.systemId))}${pgField("a:"+a.id,a,sysById(a.systemId))}
       </div>
       <label class="f">Substrate<span class="cfield sfield"><input class="i" id="asq-${a.id}" data-subq="${a.id}" data-env="${a.env}" value="${esc(SUB_NAME[a.substrate]||"")}" placeholder="Type to search, e.g. brick or clay" autocomplete="off"><select class="i" hidden id="as-${a.id}" data-a="substrate"><option value="">Choose the substrate…</option>${subs.map(([k,l])=>`<option value="${k}" ${a.substrate===k?"selected":""}>${esc(l)}</option>`).join("")}</select></span></label>
       ${!a.substrate?"":opts.length?`<div><div class="eyebrow" style="margin-bottom:6px">${opts.length>1?`${opts.length} KEIM systems for this substrate · choose one`:"Recommended KEIM system"}</div><div class="opts">${opts.map(s=>`
@@ -1083,6 +1084,7 @@ function docHTML(p, forPdf){
     return `<section class="sec"><div class="areahd avoid"><div class="no">${String(i+1).padStart(2,"0")}</div><div><h3>${esc(a.name||"Untitled area")}</h3><div class="sub">${esc(a.env==="exterior"?"Exterior":"Interior")} · ${esc(SUB_NAME[a.substrate]||"")}${a.colour?` · Colour ${(()=>{ const c=kcFind(a.colour); return c?`<i class="dsw" style="background:${c.hex}"></i>KEIM ${esc(c.name)}`:esc(a.colour); })()}`:""}</div></div><div class="sq">${fmt(Number(a.m2)||0,0)}<small>m²</small></div></div>
       <div class="sysbox avoid"><span class="code">${esc(s.code)} · version ${s.version}${s.status!=="published"?` <span class="superseded">· superseded</span>`:""}</span><br><b>${esc(s.name)}</b><div>${esc(s.summary)}</div><div style="color:#666;margin-top:2px">Finish: ${esc(s.finish)}</div></div>
       ${p.quick?"":`<div class="xsdoc avoid"><div class="xsh">Coating build-up</div>${xsection(s,a)}</div>`}
+      ${!a.lzPreview&&glazeInfo(a,s)&&glazeInfo(a,s).src?`<div class="xsdoc avoid"><div class="xsh">Glaze preview · ${esc(glazeInfo(a,s).c.name)} at ${esc(glazeInfo(a,s).r)} · indicative only</div><img src="${glazeInfo(a,s).src}" alt="" style="width:100%;display:block;border-radius:3px"></div>`:""}
       ${a.lzPreview?`<div class="xsdoc avoid"><div class="xsh">Before and after preview · indicative only</div><img src="${a.lzPreview}" alt="" style="width:100%;display:block;border-radius:3px"></div>`:""}
       ${a.cond&&a.cond.length?`<div class="cond avoid"><span><b>Site assessment</b></span>${a.cond.map(([k,v])=>v==null?`<span><b>${esc(k)}</b></span>`:`<span>${esc(k)}: <b>${esc(v)}</b></span>`).join("")}</div>`:""}${(a.flags||[]).map(([h,t])=>`<p class="warn avoid"><b>${esc(h)}.</b> ${esc(t)}</p>`).join("")}${absOf(a)?`<p class="note avoid" style="margin:0 0 6px"><b>Highly absorbent substrate:</b> ${esc((SUBMETA[a.substrate]||{}).note||"Confirmed by site check. A Fixativ primer coat evens out absorption.")}</p>`:""}
       <div class="steps">${steps}</div>
@@ -1361,7 +1363,7 @@ function renderQuick(){
      </section>`:""}
      ${sys?`<section class="panel"><div class="qstep"><span>5</span>Details for the specification</div>
       <div class="grid2"><label class="f">Area (m²)<input class="i mono" type="number" min="0" id="q-m2" data-q="m2" value="${esc(q.m2)}"></label>
-      <label class="f">Colour${colourField("q-colour",'data-q="colour"',q.colour,"q")}${lzBtn("q",sys)}${colourInfo(q,sys)}</label>${dilField("q",q,sys)}${pgField("q",q,sys)}
+      <label class="f">Colour${colourField("q-colour",'data-q="colour"',q.colour,"q")}${lzBtn("q",sys)}${colourInfo(q,sys)}</label>${dilField("q",q,sys)}${glazePreview("q",q,sys)}${pgField("q",q,sys)}
       ${forP?`<label class="f">Area name<input class="i" id="q-area" data-q="area" value="${esc(q.area||"")}" placeholder="${esc(SUB_NAME[q.substrate]||"e.g. North facade")}"></label>`:`<label class="f">Project name<input class="i" id="q-name" data-q="name" value="${esc(q.name||"")}" placeholder="Optional"></label>
       <label class="f">Site address<input class="i" id="q-address" data-q="address" value="${esc(q.address||"")}" placeholder="Optional"></label>`}</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">${forP?`<button class="btn primary" data-act="qtobuild">Add this area to ${esc(S.project.name||"the project")}</button><button class="btn" data-act="wzcancelproj">Cancel</button>`:`<button class="btn primary" data-act="qpdf">Download spec PDF</button><button class="btn" data-act="qtobuild">Add to a project spec</button>`}</div></section>`:""}
@@ -1690,7 +1692,9 @@ function colourPG(colour,sys){ const k=kcKeyOf(colour), col=finishCol(sys); if(!
 function areaPG(a){ if(a.pg) return a.pg; const r=colourPG(a.colour,sysById(a.systemId)); return r&&r.pg||""; }
 function refreshColourInfo(inp){ let o,sys,t; if(inp.id==="q-colour"){ o={...S.quick,colour:inp.value}; sys=sysById(S.quick.systemId); t="q"; } else if(/^ac-/.test(inp.id)){ const a=(S.project.areas||[]).find(x=>x.id===inp.id.slice(3)); if(!a) return; o={...a,colour:inp.value}; sys=sysById(a.systemId); t="a:"+a.id; } else return;
   const lab=inp.closest("label.f"); if(lab){ lab.querySelector(".cinfo")?.remove(); const h=colourInfo(o,sys); if(h) lab.insertAdjacentHTML("beforeend",h); }
-  const pgl=document.querySelector(`[data-pg="${t}"]`)?.closest("label"); if(pgl){ const h=pgField(t,o,sys); if(h) pgl.outerHTML=h; } }
+  const pgl=document.querySelector(`[data-pg="${t}"]`)?.closest("label"); if(pgl){ const h=pgField(t,o,sys); if(h) pgl.outerHTML=h; }
+  const gp=glazePreview(t,o,sys); const host=inp.closest(".panel,.area"); const old=host&&[...host.querySelectorAll(".glzp")][0];
+  if(old){ if(gp) old.outerHTML=gp; else old.remove(); } else if(gp&&host){ const dl=host.querySelector(`[data-dil="${t}"]`)?.closest("label"); if(dl) dl.insertAdjacentHTML("afterend",gp); } }
 function colourInfo(o,sys){ const r=colourPG(o.colour,sys); if(!r) return ""; return r.na?`<small class="cinfo na">KEIM ${esc(r.key)} is not in the ${esc(r.prod)} range in Australia. Choose another shade or ask KEIM.</small>`:`<small class="cinfo">${esc(PG_LABEL[r.pg])} for ${esc(r.prod)}</small>`; }
 function kcFind(t){ if(!t) return null; const k=String(t).toLowerCase().replace(/[^a-z0-9]/g,""); return KC_IDX.get(k)||null; }
 function colourField(id,attr,val,target){ const c=kcFind(val);
@@ -1705,7 +1709,8 @@ function showSuggest(inp){ const box=inp.closest(".cfield"); if(!box) return; le
   if(!dd){ dd=document.createElement("div"); dd.className="kcdd"; dd.setAttribute("role","listbox"); box.appendChild(dd); }
   dd.dataset.for=inp.id; dd.dataset.i="0";
   const sys=inp.id==="q-colour"?sysById(S.quick.systemId):/^ac-/.test(inp.id)?sysById(((S.project.areas||[]).find(x=>x.id===inp.id.slice(3))||{}).systemId):null;
-  dd.innerHTML=list.map(([n,h],i)=>{ const r=sys?colourPG(n,sys):null; const b=r?(r.na?`<em class="na">Not in ${esc(r.prod)}</em>`:`<em>${r.pg}</em>`):""; return `<button type="button" role="option" class="${i===0?"on":""}" data-kcpick="${esc(n)}"><i style="background:${h}"></i><span>${esc(n)}</span>${b}</button>`; }).join(""); }
+  requestAnimationFrame(()=>{ dd.style.right="0"; const rr=dd.getBoundingClientRect(); if(rr.left<8) dd.style.right=(rr.left-8)+"px"; });
+  dd.innerHTML=list.map(([n,h],i)=>{ const r=sys?colourPG(n,sys):null; const b=r?(r.na?`<em class="na" title="Not available in ${esc(r.prod)}">N/A</em>`:`<em>${r.pg}</em>`):""; return `<button type="button" role="option" class="${i===0?"on":""}" data-kcpick="${esc(n)}"><i style="background:${h}"></i><span>${esc(n)}</span>${b}</button>`; }).join(""); }
 function subSuggest(env,q){ q=(q||"").trim().toLowerCase(); const tk=q.split(/\s+/).filter(Boolean); const subs=SUBSTRATES[env]||[];
   const rank=([k,l])=>{ const ll=l.toLowerCase(); if(!q) return 0; if(ll.startsWith(q)) return 0; if(ll.split(/[\s(]+/).some(w=>w.startsWith(tk[0]))&&!/\(/.test(ll.split(tk[0])[0])) return 1; return 2; };
   return subs.filter(([k,l])=>{ const hay=(l+" "+((SUBMETA[k]||{}).g||"")+" "+((SUBMETA[k]||{}).kw||"")+" "+k).toLowerCase(); return !tk.length||tk.every(t=>hay.includes(t)); }).map((x,i)=>[x,rank(x),i]).sort((a,b)=>a[1]-b[1]||a[2]-b[2]).map(x=>x[0]); }
@@ -1925,9 +1930,22 @@ function xsLayerStyle(pid,stage){
   if(/contact-plus/.test(pid)) return {c:"#E7DFCF",o:1,t:"paint",h:18};
   return {c:"#F4EFE5",o:1,t:"paint",h:18};
 }
-const TEX={}; let XS_N=0;
+const TEX={}, TEX_IMG={}; let XS_N=0;
+/* glaze preview: bare substrate on the left, the chosen Concretal-Lasur colour and dilution on the right (same multiply engine as the wall preview) */
+const GLZ_CACHE={};
+function glazeSample(kind,hex,pct){ const img=TEX_IMG[kind]||TEX_IMG.concrete; if(!img||!hex) return null; const key=[kind,hex,pct].join("|"); if(GLZ_CACHE[key]) return GLZ_CACHE[key];
+  const W=900,H=300, cv=document.createElement("canvas"); cv.width=W; cv.height=H; const x=cv.getContext("2d");
+  const s=Math.max(W/img.width,H/img.height), iw=img.width*s, ih=img.height*s; x.drawImage(img,(W-iw)/2,(H-ih)/2,iw,ih);
+  x.save(); x.beginPath(); x.rect(W*0.38,0,W,H); x.clip(); x.globalCompositeOperation="multiply"; x.fillStyle=lzFill(hex,pct); x.fillRect(0,0,W,H); x.restore();
+  x.fillStyle="rgba(255,255,255,.9)"; x.fillRect(W*0.38-1.5,0,3,H);
+  const tag=(t,X)=>{ x.font="600 22px system-ui,sans-serif"; const w=x.measureText(t).width+24; x.fillStyle="rgba(20,20,20,.62)"; x.fillRect(X,H-50,w,34); x.fillStyle="#fff"; x.fillText(t,X+12,H-26); };
+  tag("Bare",16); tag("With glaze",W*0.38+16);
+  try{ return GLZ_CACHE[key]=cv.toDataURL("image/jpeg",.85); }catch(_){ return null; } }
+function glazeInfo(o,sys){ if(!isGlazeSys(sys)) return null; const c=kcFind(o.colour); if(!c) return null; const r=o.lasurRatio||"1:2"; const pct=(LZ_DIL.find(d=>d[0]===r)||[0,33])[1];
+  const k=xsSubKind(o.substrate); const kind=TEX_IMG[k]?k:"concrete"; return {src:glazeSample(kind,c.hex,pct),c,r,pct,std:!o.lasurRatio}; }
+function glazePreview(t,o,sys){ const g=glazeInfo(o,sys); if(!g||!g.src) return ""; return `<div class="glzp" style="grid-column:1/-1"><img src="${g.src}" alt="Glaze preview"><div class="glzc"><span><b>${esc(g.c.name)}</b> at ${esc(g.r)} (${g.pct}% Lasur)${g.std?" · standard dilution":""}</span><button type="button" class="btn sm" data-act="lzopen" data-v="${esc(t)}">${ICON_EYE} Try on my wall</button></div><small>Indicative only. Always confirm on a trial area.</small></div>`; }
 const TEX_KINDS=["concrete","render","brick","block","plaster","board","painted","stone","aac","fc","keim","clay"];
-async function loadTex(){ await Promise.all(TEX_KINDS.map(async k=>{ try{ const r=await fetch(`tex/${k}.jpg`); if(!r.ok) return; const b=await r.blob(); TEX[k]=await new Promise(res=>{ const fr=new FileReader(); fr.onload=()=>res(fr.result); fr.onerror=()=>res(null); fr.readAsDataURL(b); }); }catch(_){} }));
+async function loadTex(){ await Promise.all(TEX_KINDS.map(async k=>{ try{ const r=await fetch(`tex/${k}.jpg`); if(!r.ok) return; const b=await r.blob(); TEX[k]=await new Promise(res=>{ const fr=new FileReader(); fr.onload=()=>res(fr.result); fr.onerror=()=>res(null); fr.readAsDataURL(b); }); if(TEX[k]) await new Promise(res=>{ const im=new Image(); im.onload=()=>{ TEX_IMG[k]=im; res(); }; im.onerror=res; im.src=TEX[k]; }); }catch(_){} }));
   if(Object.keys(TEX).length&&["quick","build","library","easy"].includes(S.tab)&&!document.activeElement?.closest?.("#app input,#app textarea")) render(); }
 function xsection(sys, a, opts){
   if(!sys) return ""; opts=opts||{}; const big=!!opts.big; const xid=++XS_N;
